@@ -115,6 +115,7 @@ const hammerMill = [
   { value: 'V-Belts', label: 'V-Belts' },
   { value: 'Drive end bearings', label: 'Drive end bearings' },
   { value: 'Non drive end bearings', label: 'Non drive end bearings' },
+  { value: 'Drive end bearings', label: 'Drive end bearings' },
 ];
 const hammerConveyor = [
   { label: 'Main Motor', value: 'Main Motor' },
@@ -122,13 +123,24 @@ const hammerConveyor = [
   { value: 'V-Belts', label: 'V-Belts' },
   { value: 'Drive end bearings', label: 'Drive end bearings' },
   { value: 'Non drive end bearings', label: 'Non drive end bearings' },
+  { value: 'DFC Ram Shaft', label: 'DFC Ram Shaft' },
+  { value: 'Pellet Dye', label: 'Pellet Dye' },
+  { value: 'Pellet Dye Holder', label: 'Pellet Dye Holder' },
+  { value: 'Collar', label: 'Collar' },
+  { value: 'Tikki', label: 'Tikki' },
 ];
 
 const hammerFans = [
   { label: 'Main Motor', value: 'Main Motor' },
-  { value: 'Pulleys', label: 'Pulleys' },
+  { value: 'Gear Box', label: 'Gear Box' },
   { value: 'V-Belts', label: 'V-Belts' },
-  { value: 'Rotary Air lock Valve', label: 'Rotary Air lock Valve' },
+  { value: 'Drive end bearings', label: 'Drive end bearings' },
+  { value: 'Non drive end bearings', label: 'Non drive end bearings' },
+  { value: 'DFC Ram Shaft', label: 'DFC Ram Shaft' },
+  { value: 'Pellet Dye', label: 'Pellet Dye' },
+  { value: 'Pellet Dye Holder', label: 'Pellet Dye Holder' },
+  { value: 'Collar', label: 'Collar' },
+  { value: 'Tikki', label: 'Tikki' },
 ];
 
 const dFCunit = [
@@ -162,10 +174,10 @@ export default function DashboardAppPage() {
   const [operatorsSupervisors, setOperatorsSupervisors] = useState('');
   const [electrician, setElectrician] = useState('');
   const [technicianMechanical, setTechnicianMechanical] = useState('');
-  const [laboursMale, setLaboursMale] = useState();
-  const [laboursFemale, setLaboursFemale] = useState();
-  const [labourRelatedConcerns, setLabourRelatedConcerns] = useState();
-  const [otherHumanResources, setOtherHumanResources] = useState();
+  const [laboursMale, setLaboursMale] = useState('');
+  const [laboursFemale, setLaboursFemale] = useState('');
+  const [labourRelatedConcerns, setLabourRelatedConcerns] = useState('');
+  const [otherHumanResources, setOtherHumanResources] = useState('');
   const [isPlantShutdown, setIsPlantShutdown] = useState('');
   const [isPlantShutdownRemark, setIsPlantShutdownRemark] = useState('');
   const [shiftTime, setShiftTime] = useState('');
@@ -175,7 +187,8 @@ export default function DashboardAppPage() {
   const [dfc2RunningHours, setDfc2RunningHours] = useState('');
   const [totalDelayHours, setTotalDelayHours] = useState('');
   const [tonsPerShift, setTonsPerShift] = useState('');
-
+  const [breakdown, setBreakdown] = useState('');
+  const [breakdownText, setBreakdownText] = useState('');
   const [frontendValue, setFrontendValue] = useState('');
   const [frontendValue2, setFrontendValue2] = useState('');
   const [age, setAge] = useState(frontendValue);
@@ -238,27 +251,78 @@ export default function DashboardAppPage() {
   useEffect(() => {
     const values = localStorage.getItem('shiftReport');
     const parsedShiftReportData = JSON.parse(values);
-    setShiftReportData(parsedShiftReportData);
-    setFrontendValue(componentMapping[parsedShiftReportData[0]?.shiftBreakdownReportProd[0]?.bdComponent]);
-    setAge(componentMapping[parsedShiftReportData[0]?.shiftBreakdownReportProd[0]?.bdComponent]);
-    setFrontendValue2(componentMapping[parsedShiftReportData[0]?.shiftBreakdownReportProd[0]?.bdComponentParts]);
-    setShiftIncharge(parsedShiftReportData[0]?.mpShiftIncharge);
-    setFirstSelectOption(parsedShiftReportData[0]?.bdComponent);
-    setOperatorsSupervisors(parsedShiftReportData[0]?.mpOperatorsSupervisors);
-    setElectrician(parsedShiftReportData[0]?.mpTechnicians);
-    setTechnicianMechanical(parsedShiftReportData[0]?.mpTractorDrivers);
-    setLaboursMale(parsedShiftReportData[0]?.mpLabourMale);
-    setLaboursFemale(parsedShiftReportData[0]?.mpLabourFemale);
-    setLabourRelatedConcerns(parsedShiftReportData[0]?.mpLabourRelatedConcerns);
-    setOtherHumanResources(parsedShiftReportData[0]?.mpOtherHmanResources);
-    setIsPlantShutdown(parsedShiftReportData[0]?.pdIsPlantShutdown);
-    setShiftTime(parsedShiftReportData[0]?.pdShiftTime);
-    setPlantRunningHours(parsedShiftReportData[0]?.pdPlantRunningHours?.slice(0, 5));
-    setCgRunningHours(parsedShiftReportData[0]?.pdCgRunningHours?.slice(0, 5));
-    setDfc1RunningHours(parsedShiftReportData[0]?.pdDfc1RunningHours?.slice(0, 5));
-    setDfc2RunningHours(parsedShiftReportData[0]?.pdDfc2RunningHours?.slice(0, 5));
-    setTotalDelayHours(parsedShiftReportData[0]?.pdTotalDelayHours?.slice(0, 5));
-    setTonsPerShift(parsedShiftReportData[0]?.pdTonsPerShift);
+
+    console.log(parsedShiftReportData?.length > 0);
+
+    setShiftReportData(parsedShiftReportData?.length > 0 ? parsedShiftReportData : '');
+    setFrontendValue(
+      parsedShiftReportData?.length > 0
+        ? componentMapping[parsedShiftReportData[0]?.shiftBreakdownReportProd[0]?.bdComponent]
+        : ''
+    );
+    setAge(
+      parsedShiftReportData[0]?.shiftBreakdownReportProd[0]?.bdComponent
+        ? componentMapping[parsedShiftReportData[0]?.shiftBreakdownReportProd[0]?.bdComponent]
+        : 0
+    );
+
+    setFrontendValue2(
+      parsedShiftReportData[0]?.shiftBreakdownReportProd[0]?.bdComponentParts
+        ? componentMapping2[parsedShiftReportData[0]?.shiftBreakdownReportProd[0]?.bdComponentParts]
+        : ''
+    );
+    setAge2(
+      parsedShiftReportData[0]?.shiftBreakdownReportProd[0]?.bdComponent
+        ? componentMapping2[parsedShiftReportData[0]?.shiftBreakdownReportProd[0]?.bdComponent]
+        : ''
+    );
+    setBreakdown(
+      parsedShiftReportData[0]?.shiftBreakdownReportProd[0]?.delayTime
+        ? parsedShiftReportData[0]?.shiftBreakdownReportProd[0]?.delayTime?.slice(0, 5)
+        : ''
+    );
+    setBreakdownText(
+      parsedShiftReportData[0]?.shiftBreakdownReportProd[0]?.freeText
+        ? parsedShiftReportData[0]?.shiftBreakdownReportProd[0]?.freeText
+        : ''
+    );
+    setShiftIncharge(parsedShiftReportData[0]?.mpShiftIncharge ? parsedShiftReportData[0]?.mpShiftIncharge : '');
+    setFirstSelectOption(parsedShiftReportData[0]?.bdComponent ? parsedShiftReportData[0]?.bdComponent : '');
+    setOperatorsSupervisors(
+      parsedShiftReportData[0]?.mpOperatorsSupervisors ? parsedShiftReportData[0]?.mpOperatorsSupervisors : ''
+    );
+    setElectrician(parsedShiftReportData[0]?.mpTechnicians ? parsedShiftReportData[0]?.mpTechnicians : '');
+    setTechnicianMechanical(
+      parsedShiftReportData[0]?.mpTractorDrivers ? parsedShiftReportData[0]?.mpTractorDrivers : ''
+    );
+    setLaboursMale(parsedShiftReportData[0]?.mpLabourMale ? parsedShiftReportData[0]?.mpLabourMale : '');
+    setLaboursFemale(parsedShiftReportData[0]?.mpLabourFemale ? parsedShiftReportData[0]?.mpLabourFemale : '');
+    setLabourRelatedConcerns(
+      parsedShiftReportData[0]?.mpLabourRelatedConcerns ? parsedShiftReportData[0]?.mpLabourRelatedConcerns : ''
+    );
+    setOtherHumanResources(
+      parsedShiftReportData[0]?.mpOtherHmanResources ? parsedShiftReportData[0]?.mpOtherHmanResources : ''
+    );
+    setIsPlantShutdown(parsedShiftReportData[0]?.pdIsPlantShutdown ? parsedShiftReportData[0]?.pdIsPlantShutdown : '');
+    setShiftTime(parsedShiftReportData[0]?.pdShiftTime ? parsedShiftReportData[0]?.pdShiftTime : '');
+    setPlantRunningHours(
+      parsedShiftReportData[0]?.pdPlantRunningHours?.slice(0, 5)
+        ? parsedShiftReportData[0]?.pdPlantRunningHours?.slice(0, 5)
+        : ''
+    );
+    setCgRunningHours(
+      parsedShiftReportData[0]?.pdCgRunningHours ? parsedShiftReportData[0]?.pdCgRunningHours?.slice(0, 5) : ''
+    );
+    setDfc1RunningHours(
+      parsedShiftReportData[0]?.pdDfc1RunningHours ? parsedShiftReportData[0]?.pdDfc1RunningHours?.slice(0, 5) : ''
+    );
+    setDfc2RunningHours(
+      parsedShiftReportData[0]?.pdDfc2RunningHours ? parsedShiftReportData[0]?.pdDfc2RunningHours?.slice(0, 5) : ''
+    );
+    setTotalDelayHours(
+      parsedShiftReportData[0]?.pdTotalDelayHours ? parsedShiftReportData[0]?.pdTotalDelayHours?.slice(0, 5) : ''
+    );
+    setTonsPerShift(parsedShiftReportData[0]?.pdTonsPerShift ? parsedShiftReportData[0]?.pdTonsPerShift : '');
   }, [getShiftReportData]);
 
   console.log(shiftReportData ? shiftReportData[0]?.mpShiftIncharge : '');
@@ -267,7 +331,7 @@ export default function DashboardAppPage() {
   const [isDFC, setDFC] = useState(false);
   const [secondSelectOptions, setSecondSelectOptions] = useState([]);
   const [tonsPerShiftRemark, setTonsPerShiftRemark] = useState('');
-  const [breakdown, setBreakdown] = useState();
+
   const [twoBoxes, setTwoBoxes] = useState(false);
 
   console.log({ frontendValue });
@@ -551,7 +615,7 @@ export default function DashboardAppPage() {
     if (!!frontendValue2) {
       handleSecondSelect(frontendValue2);
     }
-    console.log(frontendValue2);
+    console.log({ frontendValue2 });
     //
   }, [frontendValue, frontendValue2]);
 
@@ -559,7 +623,9 @@ export default function DashboardAppPage() {
     // value will be item value
   };
 
-  const [selectedValue, setSelectedValue] = useState();
+  console.log({ isPlantShutdown });
+
+  const [selectedValue, setSelectedValue] = useState(isPlantShutdown === 'Y' ? 'yes' : 'no');
 
   const handleRadioChange = (event) => {
     console.log(event.target.value);
@@ -604,9 +670,7 @@ export default function DashboardAppPage() {
 
   const handleInputChange = (e) => {
     const input = e;
-
     const formattedInput = input.replace(/[^\d:]/g, '');
-
     const regex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
 
     const valid = regex.test(formattedInput) || formattedInput === '';
@@ -647,8 +711,8 @@ export default function DashboardAppPage() {
       {
         bdComponent: firstSelectOption,
         bdComponentParts: secondSelectOption,
-        delayTime: totalDelayHours ? `${totalDelayHours}:00` : '00:00:00',
-        freeText: 'not working properly',
+        delayTime: breakdown ? `${breakdown}:00` : '00:00:00',
+        freeText: breakdownText,
         orgUnitId: 1,
         tenantId: 'Test',
       },
@@ -677,6 +741,8 @@ export default function DashboardAppPage() {
       setIsValid5(true);
     }
 
+    console.log(data);
+
     dispatch(submit({ body: data }));
   };
 
@@ -703,10 +769,9 @@ export default function DashboardAppPage() {
               <Grid item xs={12} md={3}>
                 <header style={{ fontWeight: 'bold', marginBottom: 10 }}>Shift Incharge:</header>
               </Grid>
-
+              {console.log({ shiftIncharge })}
               <Grid item xs={12} md={8} style={{ marginBottom: 10 }}>
                 <TextField
-                  key={shiftIncharge}
                   fullWidth
                   size="large"
                   type="text"
@@ -724,12 +789,11 @@ export default function DashboardAppPage() {
                     marginBottom: 10,
                   }}
                 >
-                  Operators/Supervisors:
+                  Operators / Supervisors:
                 </header>
               </Grid>
               <Grid item xs={12} md={8} style={{ marginBottom: 10 }}>
                 <TextField
-                  key={operatorsSupervisors}
                   fullWidth
                   size="large"
                   type="text"
@@ -748,7 +812,6 @@ export default function DashboardAppPage() {
               </Grid>
               <Grid item xs={12} md={8} style={{ marginBottom: 10 }}>
                 <TextField
-                  key={electrician}
                   fullWidth
                   size="large"
                   type="text"
@@ -760,11 +823,10 @@ export default function DashboardAppPage() {
             </Grid>
             <Grid item xs={12} md={6} container style={{ justifyContent: 'space-around', alignItems: 'center' }}>
               <Grid item xs={12} md={3}>
-                <header style={{ fontWeight: 'bold', marginBottom: 10 }}>Technician/Mechanical:</header>
+                <header style={{ fontWeight: 'bold', marginBottom: 10 }}>Technician / Mechanical:</header>
               </Grid>
               <Grid item xs={12} md={8} style={{ marginBottom: 10 }}>
                 <TextField
-                  key={technicianMechanical}
                   fullWidth
                   size="large"
                   type="text"
@@ -783,7 +845,6 @@ export default function DashboardAppPage() {
               </Grid>
               <Grid item xs={12} md={8} style={{ marginBottom: 10 }}>
                 <TextField
-                  key={laboursMale}
                   fullWidth
                   size="large"
                   type="text"
@@ -799,7 +860,6 @@ export default function DashboardAppPage() {
               </Grid>
               <Grid item xs={12} md={8} style={{ marginBottom: 10 }}>
                 <TextField
-                  key={laboursFemale}
                   fullWidth
                   size="large"
                   type="text"
@@ -818,7 +878,6 @@ export default function DashboardAppPage() {
               </Grid>
               <Grid item xs={12} md={8} style={{ marginBottom: 10 }}>
                 <TextField
-                  key={labourRelatedConcerns}
                   fullWidth
                   size="large"
                   type="text"
@@ -834,7 +893,6 @@ export default function DashboardAppPage() {
               </Grid>
               <Grid item xs={12} md={8} style={{ marginBottom: 10 }}>
                 <TextField
-                  key={otherHumanResources}
                   fullWidth
                   size="large"
                   type="text"
@@ -851,35 +909,39 @@ export default function DashboardAppPage() {
             Production Details
           </Typography>
 
-          <Grid container style={{ justifyContent: 'space-around' }}>
+          <Grid container height={70} style={{ justifyContent: 'space-around' }}>
             <Grid item xs={12} md={6} container style={{ justifyContent: 'space-around', alignItems: 'center' }}>
               <Grid item xs={12} md={3}>
                 <header style={{ fontWeight: 'bold', marginBottom: 10 }}>Is Plant shutdown?:</header>
               </Grid>
               <Grid item xs={12} md={8} style={{ marginBottom: 10 }}>
-                {console.log(selectedValue)}
+                {console.log({ selectedValue })}
                 <RadioGroup value={selectedValue} onChange={handleRadioChange} style={{ flexDirection: 'row' }}>
                   <FormControlLabel value="yes" control={<Radio />} label="Yes" style={{ marginRight: 20 }} />
-                  {/* Add margin-right to create space between Radio buttons */}
                   <FormControlLabel value="no" control={<Radio />} label="No" />
                 </RadioGroup>
               </Grid>
             </Grid>
-
-            <Grid item xs={12} md={6} container style={{ justifyContent: 'space-around', alignItems: 'center' }}>
-              <Grid item xs={12} md={3}>
-                {' '}
+            {selectedValue === 'yes' ? (
+              <Grid item xs={12} md={6} container style={{ justifyContent: 'space-around', alignItems: 'center' }}>
+                <Grid item xs={12} md={3}>
+                  {' '}
+                </Grid>
+                <Grid item xs={12} md={8} style={{ marginBottom: 10 }}>
+                  <TextField
+                    fullWidth
+                    size="large"
+                    type="text"
+                    value={isPlantShutdownRemark}
+                    onChange={(e) => setIsPlantShutdownRemark(e.target.value)}
+                  />
+                </Grid>
               </Grid>
-              <Grid item xs={12} md={8} style={{ marginBottom: 10 }}>
-                <TextField
-                  fullWidth
-                  size="large"
-                  type="text"
-                  value={isPlantShutdownRemark}
-                  onChange={(e) => setIsPlantShutdownRemark(e.target.value)}
-                />
+            ) : (
+              <Grid item xs={12} md={6} container style={{ justifyContent: 'space-around', alignItems: 'center' }}>
+                {''}
               </Grid>
-            </Grid>
+            )}
           </Grid>
 
           <Grid container style={{ justifyContent: 'space-around' }}>
@@ -889,7 +951,6 @@ export default function DashboardAppPage() {
               </Grid>
               <Grid item xs={12} md={8} style={{ marginBottom: 10 }}>
                 <TextField
-                  key={shiftTime}
                   fullWidth
                   size="large"
                   type="text"
@@ -905,7 +966,6 @@ export default function DashboardAppPage() {
               </Grid>
               <Grid item xs={12} md={8} style={{ marginBottom: 10 }}>
                 <TextField
-                  key={plantRunningHours}
                   fullWidth
                   size="large"
                   type="text"
@@ -924,7 +984,6 @@ export default function DashboardAppPage() {
               <Grid item xs={12} md={8} style={{ marginBottom: 10 }}>
                 <TextField
                   fullWidth
-                  key={cgRunningHours}
                   size="large"
                   type="text"
                   placeholder="HH:MM"
@@ -942,7 +1001,6 @@ export default function DashboardAppPage() {
               <Grid item xs={12} md={8} style={{ marginBottom: 10 }}>
                 <TextField
                   fullWidth
-                  key={dfc1RunningHours}
                   size="large"
                   type="text"
                   placeholder="HH:MM"
@@ -962,7 +1020,6 @@ export default function DashboardAppPage() {
               </Grid>
               <Grid item xs={12} md={8} style={{ marginBottom: 10 }}>
                 <TextField
-                  key={dfc2RunningHours}
                   fullWidth
                   size="large"
                   type="text"
@@ -981,7 +1038,6 @@ export default function DashboardAppPage() {
               <Grid item xs={12} md={8} style={{ marginBottom: 10 }}>
                 <TextField
                   fullWidth
-                  key={totalDelayHours}
                   size="large"
                   type="text"
                   placeholder="HH:MM"
@@ -1001,7 +1057,6 @@ export default function DashboardAppPage() {
               </Grid>
               <Grid item xs={12} md={8} style={{ marginBottom: 10 }}>
                 <TextField
-                  key={tonsPerShift}
                   fullWidth
                   size="large"
                   type="text"
@@ -1017,88 +1072,86 @@ export default function DashboardAppPage() {
           </Grid>
 
           <Grid container style={{ justifyContent: 'space-around' }}>
-            <Grid item xs={12} md={1.8}>
-              <header style={{ marginBottom: 10, fontWeight: 'bold', paddingLeft: 10 }}>Breakdown:</header>
-            </Grid>
+            <Grid container style={{ justifyContent: 'space-around', alignItems: 'center' }}>
+              <Grid item xs={12} md={1.8}>
+                <header style={{ marginBottom: 10, fontWeight: 'bold', paddingLeft: 10 }}>Breakdown:</header>
+              </Grid>
 
-            {!twoBoxes ? (
-              <>
-                <Grid item xs={12} md={2.5} style={{ marginBottom: 10 }}>
-                  <FormControl fullWidth>
-                    <Select value={age} onChange={handleFirstSelectChange}>
+              {!twoBoxes ? (
+                <>
+                  <Grid item xs={12} md={2.5} style={{ marginBottom: 10 }}>
+                    <FormControl fullWidth>
+                      <Select value={age} onChange={handleFirstSelectChange}>
+                        {positionOptions.map((option) => (
+                          <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12} md={2.5} style={{ marginBottom: 10 }}>
+                    {console.log({ age2 })}
+                    <FormControl fullWidth>
+                      <Select value={age2} onChange={handleSecondSelectChange}>
+                        {secondSelectOptions.map((option) => (
+                          <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12} md={2.5} style={{ marginBottom: 10 }}>
+                    <TextField
+                      fullWidth
+                      variant="outlined"
+                      size="large"
+                      label=""
+                      placeholder="HH:MM"
+                      value={breakdown}
+                      onChange={(e) => setBreakdown(e.target.value)}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={2.5} style={{ marginBottom: 10 }}>
+                    <TextField
+                      fullWidth
+                      variant="outlined"
+                      size="large"
+                      label=""
+                      placeholder=""
+                      value={breakdownText}
+                      onChange={(e) => setBreakdownText(e.target.value)}
+                    />
+                  </Grid>
+                </>
+              ) : (
+                <>
+                  <Grid item xs={12} md={3} style={{ marginBottom: 10 }}>
+                    <Select value={age} onChange={handleFirstSelectChange} fullWidth>
                       {positionOptions.map((option) => (
                         <MenuItem key={option.value} value={option.value}>
                           {option.label}
                         </MenuItem>
                       ))}
                     </Select>
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12} md={2.5} style={{ marginBottom: 10 }}>
-                  <Select value={age2} onChange={handleSecondSelectChange} fullWidth size="large">
-                    {secondSelectOptions.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                        {option.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </Grid>
-                <Grid item xs={12} md={2.5} style={{ marginBottom: 10 }}>
-                  <TextField
-                    fullWidth
-                    variant="outlined"
-                    size="large"
-                    label=""
-                    placeholder=""
-                    value={breakdown}
-                    onChange={(e) => setBreakdown(e.target.value)}
-                  />
-                </Grid>
-                <Grid item xs={12} md={2.5} style={{ marginBottom: 10 }}>
-                  <TextField
-                    fullWidth
-                    variant="outlined"
-                    size="large"
-                    label=""
-                    placeholder=""
-                    value={breakdown}
-                    onChange={(e) => setBreakdown(e.target.value)}
-                  />
-                </Grid>
-              </>
-            ) : (
-              <>
-                <Grid item xs={12} md={3} style={{ marginBottom: 10 }}>
-                  <Select value={age} onChange={handleFirstSelectChange} fullWidth>
-                    {positionOptions.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                        {option.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </Grid>
-                <Grid item xs={12} md={3.5} style={{ marginBottom: 10 }}>
-                  <TextField
-                    fullWidth
-                    size="large"
-                    type="text"
-                    placeholder=""
-                    value={tonsPerShift}
-                    onChange={(e) => setTonsPerShift(e.target.value)}
-                  />
-                </Grid>
-                <Grid item xs={12} md={3.5} style={{ marginBottom: 10 }}>
-                  <TextField
-                    fullWidth
-                    size="large"
-                    type="text"
-                    placeholder="Remark"
-                    value={tonsPerShiftRemark}
-                    onChange={(e) => setTonsPerShiftRemark(e.target.value)}
-                  />
-                </Grid>
-              </>
-            )}
+                  </Grid>
+                  <Grid item xs={12} md={3.5} style={{ marginBottom: 10 }}>
+                    <TextField fullWidth size="large" type="text" placeholder="" />
+                  </Grid>
+                  <Grid item xs={12} md={3.5} style={{ marginBottom: 10 }}>
+                    <TextField
+                      fullWidth
+                      size="large"
+                      type="text"
+                      placeholder="Remark"
+                      value={tonsPerShiftRemark}
+                      onChange={(e) => setTonsPerShiftRemark(e.target.value)}
+                    />
+                  </Grid>
+                </>
+              )}
+            </Grid>
           </Grid>
           <Box display="flex" justifyContent="center" alignItems="center">
             <Grid item xs={12} style={{ marginTop: 10 }}>

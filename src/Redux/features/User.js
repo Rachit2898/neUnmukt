@@ -8,7 +8,7 @@ const initialState = {
   loading: false,
   isLogin: false,
   isSubmitted: false,
-  getShiftReportData: {},
+  getShiftReportData: [],
 };
 
 export const getShiftReport = createAsyncThunk('shiftReport', async (body) => {
@@ -75,6 +75,13 @@ const userReducer = createSlice({
     shift: (state, action) => {
       state.shiftValue = action.payload;
     },
+    clear: (state, action) => {
+      state.shiftValue = '';
+      state.dateValue = '';
+      state.getShiftReportData = [];
+      const value = [];
+      localStorage.setItem('shiftReport', JSON.stringify(value));
+    },
   },
 
   extraReducers: (builder) => {
@@ -93,5 +100,5 @@ const userReducer = createSlice({
       });
   },
 });
-export const { date, shift } = userReducer.actions;
+export const { date, shift, clear } = userReducer.actions;
 export default userReducer.reducer;

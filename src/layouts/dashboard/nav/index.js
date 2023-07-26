@@ -55,9 +55,7 @@ export default function Nav({ openNav, onCloseNav }) {
         '& .simplebar-content': { height: 1, display: 'flex', flexDirection: 'column', boxShadow: 5 },
       }}
     >
-      <Box sx={{ px: 2.5, py: 3, display: 'inline-flex' }}>
-        <img src={Icons} alt="" width="200" height="70" />
-      </Box>
+      <img src={Icons} alt="" width="200vw" height="70vh" />
 
       <NavSection data={navConfig} />
     </Scrollbar>

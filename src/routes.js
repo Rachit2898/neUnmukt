@@ -19,6 +19,10 @@ export default function Router() {
       element: <LoginPage />,
     },
     {
+      path: '/blog',
+      element: <BlogPage />,
+    },
+    {
       path: '/dashboard',
       element: <DashboardLayout />,
       children: [
@@ -33,15 +37,11 @@ export default function Router() {
       element: <SimpleLayout />,
       children: [
         // Set /login as the primary path for this layout
-        { path: '/login', element: <LoginPage /> },
+        { path: '/', element: <LoginPage /> },
         { element: <Navigate to="/login" />, index: true },
         { path: '404', element: <Page404 /> },
         { path: '*', element: <Navigate to="/404" /> },
       ],
-    },
-    {
-      path: '*',
-      element: <Navigate to="/404" replace />,
     },
   ]);
 

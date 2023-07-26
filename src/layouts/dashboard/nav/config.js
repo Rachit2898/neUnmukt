@@ -13,7 +13,7 @@ const navConfig = [
   },
   {
     title: 'shift Report',
-
+    path: '/dashboard/blog',
     icon: icon('ic_analytics'),
   },
 ];

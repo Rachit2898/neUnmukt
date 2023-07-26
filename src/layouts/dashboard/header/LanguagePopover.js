@@ -4,7 +4,7 @@ import { MenuItem, Stack, IconButton, Popover, Typography, Card } from '@mui/mat
 import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import { date, shift } from '../../../Redux/features/User';
+import { date, shift, clear } from '../../../Redux/features/User';
 
 const LANGS = [
   {
@@ -96,6 +96,13 @@ export default function LanguagePopover() {
     handleClose();
   };
 
+  const handleClear = () => {
+    setSelectedValue('');
+
+    setSelectedDate('');
+    dispatch(clear());
+  };
+
   return (
     <>
       <FormControl sx={{ m: 1, minWidth: 120 }}>
@@ -128,6 +135,11 @@ export default function LanguagePopover() {
               {dataObject[0]?.shiftName ? `Shift: ${dataObject[0]?.shiftName}` : 'Select Shift'}
             </MenuItem>
           ) : null}
+          {selectedValue && (
+            <MenuItem value="" onClick={handleClear}>
+              Clear
+            </MenuItem>
+          )}
           {LANGS.map((lang) => (
             <MenuItem key={lang.value} value={lang.value}>
               Shift: {lang.label}

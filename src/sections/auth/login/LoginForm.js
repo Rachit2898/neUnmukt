@@ -21,10 +21,11 @@ export default function LoginForm() {
   }));
 
   useEffect(() => {
-    console.log(isLogin);
     if (isLogin) {
       navigate('/dashboard', { replace: true });
     }
+    const value = [];
+    localStorage.setItem('shiftReport', JSON.stringify(value));
   }, [isLogin]);
 
   const handleClick = () => {

@@ -89,7 +89,6 @@ const authReducer = createSlice({
         const jwtTokenDecoded = jwtDecode(storedToken);
 
         if (jwtTokenDecoded.exp * 1000 < Date.now()) {
-          localStorage.removeItem();
           state.isAuthenticated = false;
           state.jwtToken = '';
           state.loginData = {};
